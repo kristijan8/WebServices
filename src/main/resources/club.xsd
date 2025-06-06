@@ -1,0 +1,29 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://soap.jee.mcnz.com/"
+           targetNamespace="http://soap.jee.mcnz.com/" elementFormDefault="qualified">
+
+
+    <xs:element name="getClubRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name ="id" type="xs:long"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getClubResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name ="clubDto" type="tns:clubDto"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="clubDto">
+        <xs:sequence>
+            <xs:element name="id" type="xs:long"/>
+            <xs:element name="title" type="xs:string"/>
+            <xs:element name="content" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+</xs:schema>

@@ -25,7 +25,7 @@ import jakarta.xml.bind.annotation.XmlType;
  *   &lt;complexContent&gt;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="user" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="clubDto" type="{http://soap.jee.mcnz.com/}clubDto"/&gt;
  *       &lt;/sequence&gt;
  *     &lt;/restriction&gt;
  *   &lt;/complexContent&gt;
@@ -36,36 +36,36 @@ import jakarta.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "user"
+    "clubDto"
 })
-@XmlRootElement(name = "getScoreRequest")
-public class GetScoreRequest {
+@XmlRootElement(name = "getClubResponse")
+public class GetClubResponse {
 
     @XmlElement(required = true)
-    protected String user;
+    protected ClubDto clubDto;
 
     /**
-     * Gets the value of the user property.
+     * Gets the value of the clubDto property.
      * 
      * @return
      *     possible object is
-     *     {@link String }
+     *     {@link ClubDto }
      *     
      */
-    public String getUser() {
-        return user;
+    public ClubDto getClubDto() {
+        return clubDto;
     }
 
     /**
-     * Sets the value of the user property.
+     * Sets the value of the clubDto property.
      * 
      * @param value
      *     allowed object is
-     *     {@link String }
+     *     {@link ClubDto }
      *     
      */
-    public void setUser(String value) {
-        this.user = value;
+    public void setClubDto(ClubDto value) {
+        this.clubDto = value;
     }
 
 }

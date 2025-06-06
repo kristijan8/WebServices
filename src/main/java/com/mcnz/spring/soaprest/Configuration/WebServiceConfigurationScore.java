@@ -13,9 +13,9 @@ import org.springframework.xml.xsd.XsdSchema;
 
 @Configuration
 @EnableWs
-public class WebServiceConfiguration  {
+public class WebServiceConfigurationScore {
 
-    @Bean
+    @Bean(name = "clubMessageDispatcherServlet")
     public ServletRegistrationBean<MessageDispatcherServlet> messageDispatcherServlet(ApplicationContext applicationContext) {
         MessageDispatcherServlet servlet = new MessageDispatcherServlet();
         servlet.setApplicationContext(applicationContext);
