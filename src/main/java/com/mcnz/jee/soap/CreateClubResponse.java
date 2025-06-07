@@ -40,8 +40,8 @@ import jakarta.xml.bind.annotation.XmlType;
     "clubDto",
     "statusMessage"
 })
-@XmlRootElement(name = "getClubResponse")
-public class GetClubResponse {
+@XmlRootElement(name = "createClubResponse")
+public class CreateClubResponse {
 
     @XmlElement(required = true)
     protected ClubDto clubDto;

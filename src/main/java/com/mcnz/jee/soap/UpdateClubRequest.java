@@ -25,8 +25,8 @@ import jakarta.xml.bind.annotation.XmlType;
  *   &lt;complexContent&gt;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="clubDto" type="{http://soap.jee.mcnz.com/}clubDto"/&gt;
- *         &lt;element name="statusMessage" type="{http://soap.jee.mcnz.com/}statusMessage"/&gt;
+ *         &lt;element name="id" type="{http://www.w3.org/2001/XMLSchema}long"/&gt;
+ *         &lt;element name="createClubDto" type="{http://soap.jee.mcnz.com/}createClubDto"/&gt;
  *       &lt;/sequence&gt;
  *     &lt;/restriction&gt;
  *   &lt;/complexContent&gt;
@@ -37,63 +37,54 @@ import jakarta.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "clubDto",
-    "statusMessage"
+    "id",
+    "createClubDto"
 })
-@XmlRootElement(name = "getClubResponse")
-public class GetClubResponse {
+@XmlRootElement(name = "updateClubRequest")
+public class UpdateClubRequest {
 
+    protected long id;
     @XmlElement(required = true)
-    protected ClubDto clubDto;
-    @XmlElement(required = true)
-    protected StatusMessage statusMessage;
+    protected CreateClubDto createClubDto;
 
     /**
-     * Gets the value of the clubDto property.
+     * Gets the value of the id property.
+     * 
+     */
+    public long getId() {
+        return id;
+    }
+
+    /**
+     * Sets the value of the id property.
+     * 
+     */
+    public void setId(long value) {
+        this.id = value;
+    }
+
+    /**
+     * Gets the value of the createClubDto property.
      * 
      * @return
      *     possible object is
-     *     {@link ClubDto }
+     *     {@link CreateClubDto }
      *     
      */
-    public ClubDto getClubDto() {
-        return clubDto;
+    public CreateClubDto getCreateClubDto() {
+        return createClubDto;
     }
 
     /**
-     * Sets the value of the clubDto property.
+     * Sets the value of the createClubDto property.
      * 
      * @param value
      *     allowed object is
-     *     {@link ClubDto }
+     *     {@link CreateClubDto }
      *     
      */
-    public void setClubDto(ClubDto value) {
-        this.clubDto = value;
-    }
-
-    /**
-     * Gets the value of the statusMessage property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link StatusMessage }
-     *     
-     */
-    public StatusMessage getStatusMessage() {
-        return statusMessage;
-    }
-
-    /**
-     * Sets the value of the statusMessage property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link StatusMessage }
-     *     
-     */
-    public void setStatusMessage(StatusMessage value) {
-        this.statusMessage = value;
+    public void setCreateClubDto(CreateClubDto value) {
+        this.createClubDto = value;
     }
 
 }

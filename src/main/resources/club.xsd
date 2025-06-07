@@ -1,6 +1,63 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://soap.jee.mcnz.com/"
            targetNamespace="http://soap.jee.mcnz.com/" elementFormDefault="qualified">
 
+    <xs:complexType name="statusMessage">
+        <xs:sequence>
+            <xs:element name="status" type="xs:string"/>
+            <xs:element name="message" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="clubDto">
+        <xs:sequence>
+            <xs:element name="id" type="xs:long"/>
+            <xs:element name="title" type="xs:string"/>
+            <xs:element name="content" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="createClubDto">
+        <xs:sequence>
+            <xs:element name="title">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <!-- Вредноста мора да биде барем еден карактер долг -->
+                        <xs:minLength value="1"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="content">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <!-- Вредноста мора да биде барем еден карактер долг -->
+                        <xs:minLength value="1"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+
+    <!--<xs:complexType name="eventSoapDto">
+        <xs:sequence>
+            <xs:element name="id" type="xs:long"/>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="startTime" type="xs:dateTime"/>
+            <xs:element name="endTime" type="xs:dateTime"/>
+            <xs:element name="type" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>-->
+    <!--<xs:complexType name="clubDetailesDto">
+        <xs:sequence>
+            <xs:element name="id" type="xs:long"/>
+            <xs:element name="title" type="xs:string"/>
+            <xs:element name="content" type="xs:string"/>
+            <xs:element name="eventDtos"
+                        type="tns:eventSoapDto"
+                        minOccurs="0"
+                        maxOccurs="unbounded"/>
+            <xs:element name="statusMessage" type="tns:statusMessage"/>
+        </xs:sequence>
+    </xs:complexType>-->
+
 
     <xs:element name="getClubRequest">
         <xs:complexType>
@@ -9,21 +66,82 @@
             </xs:sequence>
         </xs:complexType>
     </xs:element>
-
     <xs:element name="getClubResponse">
         <xs:complexType>
             <xs:sequence>
                 <xs:element name ="clubDto" type="tns:clubDto"/>
+                <xs:element name="statusMessage" type="tns:statusMessage"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
 
-    <xs:complexType name="clubDto">
-        <xs:sequence>
-            <xs:element name="id" type="xs:long"/>
-            <xs:element name="title" type="xs:string"/>
-            <xs:element name="content" type="xs:string"/>
-        </xs:sequence>
-    </xs:complexType>
+
+    <xs:element name="getAllClubsRequest">
+        <xs:complexType>
+            <xs:sequence>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="getAllClubsResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="clubDtos"
+                            type="tns:clubDto"
+                            minOccurs="0"
+                            maxOccurs="unbounded"/>
+                <xs:element name="statusMessage" type="tns:statusMessage"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+
+    <xs:element name="createClubRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="createClubDto" type="tns:createClubDto"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="createClubResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="clubDto" type="tns:clubDto"/>
+                <xs:element name="statusMessage" type="tns:statusMessage"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+
+    <xs:element name="updateClubRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="id" type="xs:long"/>
+                <xs:element name="createClubDto" type="tns:createClubDto"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="updateClubResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="clubDto" type="tns:clubDto"/>
+                <xs:element name="statusMessage" type="tns:statusMessage"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="deleteClubRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="id" type="xs:long"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="deleteClubResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="statusMessage" type="tns:statusMessage"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
 
 </xs:schema>

@@ -8,6 +8,8 @@
 
 package com.mcnz.jee.soap;
 
+import java.util.ArrayList;
+import java.util.List;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
@@ -25,7 +27,7 @@ import jakarta.xml.bind.annotation.XmlType;
  *   &lt;complexContent&gt;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="clubDto" type="{http://soap.jee.mcnz.com/}clubDto"/&gt;
+ *         &lt;element name="clubDtos" type="{http://soap.jee.mcnz.com/}clubDto" maxOccurs="unbounded" minOccurs="0"/&gt;
  *         &lt;element name="statusMessage" type="{http://soap.jee.mcnz.com/}statusMessage"/&gt;
  *       &lt;/sequence&gt;
  *     &lt;/restriction&gt;
@@ -37,39 +39,43 @@ import jakarta.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "clubDto",
+    "clubDtos",
     "statusMessage"
 })
-@XmlRootElement(name = "getClubResponse")
-public class GetClubResponse {
+@XmlRootElement(name = "getAllClubsResponse")
+public class GetAllClubsResponse {
 
-    @XmlElement(required = true)
-    protected ClubDto clubDto;
+    protected List<ClubDto> clubDtos;
     @XmlElement(required = true)
     protected StatusMessage statusMessage;
 
     /**
-     * Gets the value of the clubDto property.
+     * Gets the value of the clubDtos property.
      * 
-     * @return
-     *     possible object is
-     *     {@link ClubDto }
-     *     
-     */
-    public ClubDto getClubDto() {
-        return clubDto;
-    }
-
-    /**
-     * Sets the value of the clubDto property.
+     * <p>
+     * This accessor method returns a reference to the live list,
+     * not a snapshot. Therefore any modification you make to the
+     * returned list will be present inside the Jakarta XML Binding object.
+     * This is why there is not a <CODE>set</CODE> method for the clubDtos property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link ClubDto }
-     *     
+     * <p>
+     * For example, to add a new item, do as follows:
+     * <pre>
+     *    getClubDtos().add(newItem);
+     * </pre>
+     * 
+     * 
+     * <p>
+     * Objects of the following type(s) are allowed in the list
+     * {@link ClubDto }
+     * 
+     * 
      */
-    public void setClubDto(ClubDto value) {
-        this.clubDto = value;
+    public List<ClubDto> getClubDtos() {
+        if (clubDtos == null) {
+            clubDtos = new ArrayList<ClubDto>();
+        }
+        return this.clubDtos;
     }
 
     /**

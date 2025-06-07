@@ -37,8 +37,8 @@ import jakarta.xml.bind.annotation.XmlType;
 @XmlType(name = "", propOrder = {
     "id"
 })
-@XmlRootElement(name = "getClubRequest")
-public class GetClubRequest {
+@XmlRootElement(name = "deleteClubRequest")
+public class DeleteClubRequest {
 
     protected long id;
 

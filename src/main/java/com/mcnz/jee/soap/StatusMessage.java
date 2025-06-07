@@ -11,22 +11,21 @@ package com.mcnz.jee.soap;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for anonymous complex type.
+ * <p>Java class for statusMessage complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType&gt;
+ * &lt;complexType name="statusMessage"&gt;
  *   &lt;complexContent&gt;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="clubDto" type="{http://soap.jee.mcnz.com/}clubDto"/&gt;
- *         &lt;element name="statusMessage" type="{http://soap.jee.mcnz.com/}statusMessage"/&gt;
+ *         &lt;element name="status" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="message" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
  *       &lt;/sequence&gt;
  *     &lt;/restriction&gt;
  *   &lt;/complexContent&gt;
@@ -36,64 +35,63 @@ import jakarta.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "clubDto",
-    "statusMessage"
+@XmlType(name = "statusMessage", propOrder = {
+    "status",
+    "message"
 })
-@XmlRootElement(name = "getClubResponse")
-public class GetClubResponse {
+public class StatusMessage {
 
     @XmlElement(required = true)
-    protected ClubDto clubDto;
+    protected String status;
     @XmlElement(required = true)
-    protected StatusMessage statusMessage;
+    protected String message;
 
     /**
-     * Gets the value of the clubDto property.
+     * Gets the value of the status property.
      * 
      * @return
      *     possible object is
-     *     {@link ClubDto }
+     *     {@link String }
      *     
      */
-    public ClubDto getClubDto() {
-        return clubDto;
+    public String getStatus() {
+        return status;
     }
 
     /**
-     * Sets the value of the clubDto property.
+     * Sets the value of the status property.
      * 
      * @param value
      *     allowed object is
-     *     {@link ClubDto }
+     *     {@link String }
      *     
      */
-    public void setClubDto(ClubDto value) {
-        this.clubDto = value;
+    public void setStatus(String value) {
+        this.status = value;
     }
 
     /**
-     * Gets the value of the statusMessage property.
+     * Gets the value of the message property.
      * 
      * @return
      *     possible object is
-     *     {@link StatusMessage }
+     *     {@link String }
      *     
      */
-    public StatusMessage getStatusMessage() {
-        return statusMessage;
+    public String getMessage() {
+        return message;
     }
 
     /**
-     * Sets the value of the statusMessage property.
+     * Sets the value of the message property.
      * 
      * @param value
      *     allowed object is
-     *     {@link StatusMessage }
+     *     {@link String }
      *     
      */
-    public void setStatusMessage(StatusMessage value) {
-        this.statusMessage = value;
+    public void setMessage(String value) {
+        this.message = value;
     }
 
 }
