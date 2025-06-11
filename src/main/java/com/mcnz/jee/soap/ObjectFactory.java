@@ -140,28 +140,11 @@ public class ObjectFactory {
         return new DeleteClubResponse();
     }
 
-    /**
-     * Create an instance of {@link GetScoreRequest }
-     * 
-     */
-    public GetScoreRequest createGetScoreRequest() {
-        return new GetScoreRequest();
-    }
 
-    /**
-     * Create an instance of {@link GetScoreResponse }
-     * 
-     */
-    public GetScoreResponse createGetScoreResponse() {
-        return new GetScoreResponse();
-    }
 
-    /**
-     * Create an instance of {@link Score }
-     * 
-     */
-    public Score createScore() {
-        return new Score();
-    }
+
+
+
+
 
 }
