@@ -31,7 +31,8 @@ public class JWTGenerator {
     }
 
     public String getUsernameFromToken(String token) {
-        Claims claims = Jwts.parser().setSigningKey(JWT_Secret)
+        Claims claims = Jwts.parser()
+                .setSigningKey(JWT_Secret)
                 .parseClaimsJws(token)
                 .getBody();
         return claims.getSubject();
