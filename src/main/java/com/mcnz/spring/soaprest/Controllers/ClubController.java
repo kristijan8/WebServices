@@ -3,6 +3,9 @@ package com.mcnz.spring.soaprest.Controllers;
 import com.mcnz.jee.soap.*;
 import com.mcnz.spring.soaprest.Services.ClubService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
@@ -31,18 +34,11 @@ public class ClubController {
         Long id = request.getId();
         StatusMessage statusMessage = new StatusMessage();
         GetClubResponse response = new GetClubResponse();
-        Optional<ClubDto> clubDto = clubService.getClubById(id);
-        if (clubDto.isEmpty()) {
-            statusMessage.setMessage("Club with id " + id + " not found");
-            response.setClubDto(null);
-            statusMessage.setStatus("ERROR");
-        }
-        else
-        {
-            statusMessage.setMessage("Club with id " + id + " found");
-            statusMessage.setStatus("OK");
-            response.setClubDto(clubDto.get());
-        }
+        ClubDto clubDto = clubService.getClubById(id);
+
+        statusMessage.setMessage("Club with id " + id + " found");
+        statusMessage.setStatus("OK");
+        response.setClubDto(clubDto);
         response.setStatusMessage(statusMessage);
         return response;
     }
@@ -64,29 +60,17 @@ public class ClubController {
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "createClubRequest")
     @ResponsePayload
     public CreateClubResponse createClub(@RequestPayload CreateClubRequest request)  {
+        String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
+        CreateClubDto createClubDto = request.getCreateClubDto();
+
+        if (createClubDto.getTitle().isEmpty() || createClubDto.getContent().isEmpty()) {
+            new ResponseStatusException(HttpStatus.BAD_REQUEST, "Title must not be empty");
+        }
         CreateClubResponse response = new CreateClubResponse();
         StatusMessage statusMessage = new StatusMessage();
 
-        CreateClubDto createClubDto = request.getCreateClubDto();
-        if (createClubDto.getTitle().isEmpty() || createClubDto.getContent().isEmpty()) {
-
-            statusMessage.setMessage("Title and content must not be empty");
-            statusMessage.setStatus("ERROR");
-            response.setClubDto(null);
-            response.setStatusMessage(statusMessage);
-            return response;
-        }
-
-        if (clubService.exists(createClubDto.getTitle()) ) {
-            statusMessage.setMessage("Club with title " + createClubDto.getTitle() + " already exists");
-            statusMessage.setStatus("ERROR");
-            response.setClubDto(null);
-            response.setStatusMessage(statusMessage);
-            return response;
-        }
-
-        ClubDto clubDto = clubService.createClub(createClubDto);
-        statusMessage.setMessage("Club craeted successfully with id " + clubDto.getId());
+        ClubDto clubDto = clubService.createClub(createClubDto, currentUser);
+        statusMessage.setMessage("Club created successfully with id " + clubDto.getId());
         statusMessage.setStatus("OK");
         response.setStatusMessage(statusMessage);
         response.setClubDto(clubDto);
@@ -97,28 +81,13 @@ public class ClubController {
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "updateClubRequest")
     @ResponsePayload
     public UpdateClubResponse updateClub(@RequestPayload UpdateClubRequest request)  {
+        String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
         UpdateClubResponse response = new UpdateClubResponse();
         StatusMessage statusMessage = new StatusMessage();
-
         long id = request.getId();
         CreateClubDto updateClubDto = request.getCreateClubDto();
-        if(!clubService.exists(id)) {
-            statusMessage.setMessage("Club with id "+id + " does not exists");
-            statusMessage.setStatus("ERROR");
-            response.setClubDto(null);
-            response.setStatusMessage(statusMessage);
-            return response;
-        }
 
-        if (clubService.exists(updateClubDto.getTitle()) ) {
-            statusMessage.setMessage("Club with title " + updateClubDto.getTitle() + " already exists");
-            statusMessage.setStatus("ERROR");
-            response.setClubDto(null);
-            response.setStatusMessage(statusMessage);
-            return response;
-        }
-
-        ClubDto clubDto = clubService.updateClub(id, updateClubDto);
+        ClubDto clubDto = clubService.updateClub(id, updateClubDto, currentUser);
         statusMessage.setMessage("Club updated successfully");
         statusMessage.setStatus("OK");
         response.setStatusMessage(statusMessage);
@@ -130,17 +99,11 @@ public class ClubController {
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "deleteClubRequest")
     @ResponsePayload
     public DeleteClubResponse deleteClub(@RequestPayload DeleteClubRequest request)  {
+        String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
         DeleteClubResponse response = new DeleteClubResponse();
         StatusMessage statusMessage = new StatusMessage();
-
         long id = request.getId();
-        if(!clubService.exists(id)) {
-            statusMessage.setMessage("Club with id "+id + " does not exists");
-            statusMessage.setStatus("ERROR");
-            response.setStatusMessage(statusMessage);
-            return response;
-        }
-        clubService.deleteClub(id);
+        clubService.deleteClub(id, currentUser);
         statusMessage.setMessage("Club with id " + id + " deleted successfully");
         statusMessage.setStatus("OK");
         response.setStatusMessage(statusMessage);

@@ -10,6 +10,7 @@ public class ClubMapper {
         clubDto.setId(club.getId());
         clubDto.setTitle(club.getTitle());
         clubDto.setContent(club.getContent());
+        clubDto.setCreator(club.getCreator().getUsername());
         return clubDto;
     }
     public static Club toClub (CreateClubDto clubDto) {

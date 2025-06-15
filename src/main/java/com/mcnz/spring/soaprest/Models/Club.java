@@ -39,4 +39,11 @@ public class Club {
     @OneToMany(mappedBy = "club", cascade = CascadeType.REMOVE)
     private Set<Event> events = new HashSet<>();
 
+
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "creator_id", nullable = false)
+    private UserEntity creator;
+
+
+
 }

@@ -28,6 +28,29 @@ public class UserEntity {
     )
     private List<Role> roles = new ArrayList<>();
 
+    @OneToMany(mappedBy = "creator",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+
+    private List<Club> clubsCreated = new ArrayList<>();
+
+    // getters/setters
+    public List<Club> getClubsCreated() {
+        return clubsCreated;
+    }
+    public void setClubsCreated(List<Club> clubsCreated) {
+        this.clubsCreated = clubsCreated;
+    }
+    // add helper
+    public void addClub(Club club) {
+        clubsCreated.add(club);
+        club.setCreator(this);
+    }
+    public void removeClub(Club club) {
+        clubsCreated.remove(club);
+        club.setCreator(null);
+    }
+
 
 
 }

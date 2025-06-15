@@ -32,7 +32,7 @@ public class EventServiceImpl implements EventService {
 
 
     @Override
-    public EventDto createEvent(CreateEventDto eventDto) {
+    public EventDto createEvent(CreateEventDto eventDto, String username) {
         if (eventDto.getClubId() == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Club id is required");
         }
@@ -41,6 +41,11 @@ public class EventServiceImpl implements EventService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Club Not Found");
         }
         Club club = clubRepository.findById(eventDto.getClubId()).get();
+        if(club.getCreator().getUsername().equals(username) == false)
+        {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You are not allowed to create events for this club");
+        }
+
         Event event = toEvent(eventDto, club);
         event.setClub(club);
         eventRepository.save(event);
@@ -48,8 +53,11 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public EventDto updateEvent(Long id, UpdateEventDto eventDto) {
+    public EventDto updateEvent(Long id, UpdateEventDto eventDto, String username) {
         Event event = eventRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event Not Found"));
+        if (event.getClub().getCreator().getUsername().equals(username) == false) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You are not allowed to update events for this club");
+        }
         if (!eventDto.getName().isEmpty()) {
             event.setName(eventDto.getName());
         }
@@ -67,8 +75,12 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public void deleteEvent(Long id) {
+    public void deleteEvent(Long id, String username) {
+
         if (eventRepository.existsById(id)) {
+            if (eventRepository.findById(id).get().getClub().getCreator().getUsername().equals(username) == false) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You are not allowed to delete events for this club");
+            }
             eventRepository.deleteById(id);
         }
     }

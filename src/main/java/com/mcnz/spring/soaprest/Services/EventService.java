@@ -9,11 +9,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface EventService {
-    EventDto createEvent( CreateEventDto eventDto);
+    EventDto createEvent( CreateEventDto eventDto, String username);
 
-    EventDto updateEvent(Long id, UpdateEventDto eventDto);
+    EventDto updateEvent(Long id, UpdateEventDto eventDto, String username);
 
-    void deleteEvent(Long id);
+    void deleteEvent(Long id, String username);
 
     EventDetaildDto getEvent(Long id);
 

@@ -10,6 +10,7 @@ import com.mcnz.spring.soaprest.Mappers.ClubMapper;
 
 import com.mcnz.spring.soaprest.Repositories.ClubRepository;
 import com.mcnz.spring.soaprest.Repositories.EventRepository;
+import com.mcnz.spring.soaprest.Repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -28,10 +29,12 @@ public class ClubServiceImpl implements ClubService {
 
     private final EventRepository eventRepository;
     private ClubRepository clubRepository;
+    private final UserRepository userRepository;
 
-    public ClubServiceImpl(ClubRepository clubRepository, EventRepository eventRepository) {
+    public ClubServiceImpl(ClubRepository clubRepository, EventRepository eventRepository, UserRepository userRepository) {
         this.clubRepository = clubRepository;
         this.eventRepository = eventRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -40,20 +43,30 @@ public class ClubServiceImpl implements ClubService {
     }
 
     @Override
-    public Optional<ClubDto> getClubById(long id) {
-        return clubRepository.findFirstById(id).map(c -> toClubDto(c));
+    public ClubDto getClubById(long id) {
+        return clubRepository.findFirstById(id).map(c -> toClubDto(c)).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Club Not Found"));
     }
 
     @Override
-    public ClubDto createClub(CreateClubDto club) {
+    public ClubDto createClub(CreateClubDto club, String username) {
+        if (clubRepository.findByTitle(club.getTitle()).isPresent()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Club with this title already exists");
+        }
         Club newClub = toClub(club);
+        newClub.setCreator(userRepository.findByUsername(username).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "User Not Found")));
         Club savedClub = clubRepository.save(newClub);
         return toClubDto(savedClub);
     }
 
     @Override
-    public ClubDto updateClub(long id, CreateClubDto clubDto) {
-        Club clubToUpdate = clubRepository.findFirstById(id).orElseThrow();
+    public ClubDto updateClub(long id, CreateClubDto clubDto, String username) {
+        Club clubToUpdate = clubRepository.findFirstById(id).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Club Not Found"));
+        if (!clubToUpdate.getCreator().getUsername().equals(username)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You are not allowed to update this club");
+        }
+        if (exists(clubDto.getTitle())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Club with this title already exists");
+        }
         if (!clubDto.getTitle().isEmpty()) {
             clubToUpdate.setTitle(clubDto.getTitle());
         }
@@ -65,7 +78,11 @@ public class ClubServiceImpl implements ClubService {
     }
 
     @Override
-    public void deleteClub(long id) {
+    public void deleteClub(long id, String username) {
+        Club clubToDelete = clubRepository.findFirstById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Club Not Found"));
+        if (!clubToDelete.getCreator().getUsername().equals(username)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You are not allowed to delete this club");
+        }
         clubRepository.deleteById(id);
     }
 

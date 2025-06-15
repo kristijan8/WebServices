@@ -10,10 +10,10 @@ import java.util.Optional;
 public interface ClubService {
 
     List<ClubDto> getAllClubs();
-    Optional<ClubDto> getClubById(long id);
-    ClubDto createClub(CreateClubDto club);
-    ClubDto updateClub(long id, CreateClubDto clubDto);
-    void deleteClub(long id);
+    ClubDto getClubById(long id);
+    ClubDto createClub(CreateClubDto club, String username);
+    ClubDto updateClub(long id, CreateClubDto clubDto, String username);
+    void deleteClub(long id, String username);
     boolean exists(String title);
     boolean exists(long id);
     ClubDetailsDto getClubDetails(Long clubId);

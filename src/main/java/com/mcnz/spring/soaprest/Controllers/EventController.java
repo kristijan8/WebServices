@@ -3,6 +3,7 @@ import com.mcnz.spring.soaprest.Dto.*;
 import com.mcnz.spring.soaprest.Services.ClubService;
 import com.mcnz.spring.soaprest.Services.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -18,8 +19,6 @@ public class EventController {
         this.clubService = clubService;
     }
 
-
-
     @GetMapping("/getAllEvents")
     public List<EventDto> getAllEvents() {
         return eventService.getAllEvents();
@@ -32,12 +31,14 @@ public class EventController {
 
     @PostMapping("/createEvent")
     public EventDto createEvent(@RequestBody CreateEventDto eventDto) {
-        return eventService.createEvent( eventDto);
+        String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
+        return eventService.createEvent( eventDto, currentUser);
     }
 
     @PostMapping("/updateEvent/{eventId}")
     public EventDto updateEvent(@PathVariable("eventId") Long id, @RequestBody UpdateEventDto eventDto) {
-        return eventService.updateEvent(id, eventDto);
+        String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
+        return eventService.updateEvent(id, eventDto, currentUser);
     }
 
     @GetMapping("/getClubEvents/{clubId}")
@@ -47,7 +48,8 @@ public class EventController {
 
     @DeleteMapping("/deleteEvent/{eventId}")
     public void deleteEvent(@PathVariable("eventId") Long id) {
-        eventService.deleteEvent(id);
+        String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
+        eventService.deleteEvent(id, currentUser);
     }
 
 
