@@ -8,7 +8,7 @@ import com.mcnz.spring.soaprest.Models.UserEntity;
 import com.mcnz.spring.soaprest.Repositories.RoleRepository;
 import com.mcnz.spring.soaprest.Repositories.UserRepository;
 import com.mcnz.spring.soaprest.Security.JWTGenerator;
-import com.mcnz.spring.soaprest.Services.TokenBlacklistService;
+import com.mcnz.spring.soaprest.Services.RevokedTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +31,7 @@ public class AuthController {
     private RoleRepository roleRepository;
     private PasswordEncoder passwordEncoder;
     private JWTGenerator jwtGenerator;
-    private TokenBlacklistService tokenBlacklistService;
+    private RevokedTokenService revokedTokenService;
 
     @Autowired
     public AuthController(AuthenticationManager authenticationManager,
@@ -39,13 +39,13 @@ public class AuthController {
                           RoleRepository roleRepository,
                           PasswordEncoder passwordEncoder,
                           JWTGenerator jwtGenerator,
-                          TokenBlacklistService tokenBlacklistService) {
+                          RevokedTokenService revokedTokenService) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtGenerator = jwtGenerator;
-        this.tokenBlacklistService = tokenBlacklistService;
+        this.revokedTokenService = revokedTokenService;
     }
 
 
@@ -56,9 +56,19 @@ public class AuthController {
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        String token = jwtGenerator.generateToken(authentication);
+        String newToken = jwtGenerator.generateToken(authentication);
+        String newJti = jwtGenerator.getJtiFromToken(newToken);
 
-        return new ResponseEntity<>(new AuthResponseDTO(token), HttpStatus.OK);
+        UserEntity user = userRepository.findByUsername(loginDto.getUsername()).orElseThrow(() -> new RuntimeException("User not found"));
+
+        String oldJti = user.getLastJti();
+        if (oldJti != null ) {
+            revokedTokenService.revoke(oldJti);
+        }
+        user.setLastJti(newJti);
+        userRepository.save(user);
+
+        return new ResponseEntity<>(new AuthResponseDTO(newToken), HttpStatus.OK);
     }
 
 
@@ -82,13 +92,14 @@ public class AuthController {
     }
 
     @PostMapping("logout")
-    public ResponseEntity<Void> logout(@RequestHeader("Authorization") String authHeader) {
+    public ResponseEntity<String> logout(@RequestHeader("Authorization") String authHeader) {
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);
             String jti   = jwtGenerator.getJtiFromToken(token);
-            tokenBlacklistService.revoke(jti);
+            revokedTokenService.revoke(jti);
+
         }
-        return ResponseEntity.ok().build();
+        return new ResponseEntity<>("Logged out successfully", HttpStatus.OK);
     }
 
 

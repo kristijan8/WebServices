@@ -52,5 +52,8 @@ public class UserEntity {
     }
 
 
+    @Column(name = "last_jti")
+    private String lastJti;
+
 
 }

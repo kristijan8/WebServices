@@ -1,10 +1,12 @@
 package com.mcnz.spring.soaprest.Security;
 
+import com.mcnz.spring.soaprest.Services.RevokedTokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,7 +22,8 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     private JWTGenerator tokenGenerator;
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
-
+    @Autowired
+    private RevokedTokenService revokedTokenService;
 
 
     @Override
@@ -29,8 +32,14 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
         String token = getJWTFromRequest(request);
         if (StringUtils.hasText(token) && tokenGenerator.validateToken(token)) {
-            String useername = tokenGenerator.getUsernameFromToken(token);
-            UserDetails userDetails = customUserDetailsService.loadUserByUsername(useername);
+            String jti = tokenGenerator.getJtiFromToken(token);
+            if (revokedTokenService.isRevoked(jti))
+            {
+                throw new AuthenticationCredentialsNotFoundException("JWT is revoked");
+            }
+
+            String username = tokenGenerator.getUsernameFromToken(token);
+            UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                     userDetails, null, userDetails.getAuthorities());
             authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
