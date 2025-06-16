@@ -61,7 +61,7 @@ public class ClubServiceImpl implements ClubService {
     @Override
     public ClubDto updateClub(long id, CreateClubDto clubDto, String username) {
         Club clubToUpdate = clubRepository.findFirstById(id).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Club Not Found"));
-        if (!clubToUpdate.getCreator().getUsername().equals(username)) {
+        if (!checkAdmin(username) && !clubToUpdate.getCreator().getUsername().equals(username)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You are not allowed to update this club");
         }
         if (exists(clubDto.getTitle())) {
@@ -80,7 +80,7 @@ public class ClubServiceImpl implements ClubService {
     @Override
     public void deleteClub(long id, String username) {
         Club clubToDelete = clubRepository.findFirstById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Club Not Found"));
-        if (!clubToDelete.getCreator().getUsername().equals(username)) {
+        if (!checkAdmin(username) && !clubToDelete.getCreator().getUsername().equals(username)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You are not allowed to delete this club");
         }
         clubRepository.deleteById(id);
@@ -106,6 +106,13 @@ public class ClubServiceImpl implements ClubService {
         eventRepository.findAll().stream().filter(e -> e.getClub().getId() == clubId)
                 .forEach(event -> clubDetailsDto.getEvents().add(EventMapper.toEventDto(event)));
         return clubDetailsDto;
+    }
+
+
+    public boolean checkAdmin(String username) {
+        return userRepository.findByUsername(username)
+                .map(user -> user.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN")))
+                .orElse(false);
     }
 
 }

@@ -9,6 +9,7 @@ import org.springframework.security.authentication.AuthenticationCredentialsNotF
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import java.util.Date;
+import java.util.UUID;
 
 import static com.mcnz.spring.soaprest.Security.SecurityConstants.JWT_Secret;
 
@@ -18,10 +19,11 @@ public class JWTGenerator {
         String username = authentication.getName();
         Date currentDate = new Date();
         Date expirationDate = new Date(currentDate.getTime() + SecurityConstants.JWT_Expiration);
-
+        String jti = UUID.randomUUID().toString();
 
 
         String token  = Jwts.builder()
+                .setId(jti)
                 .setSubject(username)
                 .setIssuedAt(new Date())
                 .setExpiration(expirationDate)
@@ -44,6 +46,13 @@ public class JWTGenerator {
         } catch (Exception e) {
             throw new AuthenticationCredentialsNotFoundException("JWT is expired or invalid");
         }
+    }
+    public String getJtiFromToken(String token) {
+        return Jwts.parser()
+                .setSigningKey(JWT_Secret)
+                .parseClaimsJws(token)
+                .getBody()
+                .getId();
     }
 
 }
