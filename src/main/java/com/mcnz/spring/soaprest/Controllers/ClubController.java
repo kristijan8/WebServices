@@ -1,7 +1,11 @@
 package com.mcnz.spring.soaprest.Controllers;
 
 import com.mcnz.jee.soap.*;
+import com.mcnz.spring.soaprest.Models.UserEntity;
+import com.mcnz.spring.soaprest.Repositories.UserRepository;
+import com.mcnz.spring.soaprest.Security.CustomUserDetailsService;
 import com.mcnz.spring.soaprest.Services.ClubService;
+import com.mcnz.spring.soaprest.Services.RevokedTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,10 +25,18 @@ import java.util.Optional;
 @Endpoint
 public class ClubController {
     private static final String NAMESPACE_URI = "http://soap.jee.mcnz.com/";
+    private final CustomUserDetailsService customUserDetailsService;
 
     private ClubService clubService;
-    public ClubController(ClubService clubService) {
+    private RevokedTokenService revokedTokenService;
+    private UserRepository  userRepository;
+    public ClubController(ClubService clubService, CustomUserDetailsService customUserDetailsService,
+                          RevokedTokenService revokedTokenService,
+                          UserRepository userRepository) {
         this.clubService = clubService;
+        this.customUserDetailsService = customUserDetailsService;
+        this.revokedTokenService = revokedTokenService;
+        this.userRepository = userRepository;
     }
 
 
@@ -109,6 +121,26 @@ public class ClubController {
         response.setStatusMessage(statusMessage);
         return response;
     }
+
+
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "deleteMyClubsRequest")
+    @ResponsePayload
+    public DeleteMyClubsResponse deleteClub(@RequestPayload DeleteMyClubsRequest request)  {
+        String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
+        DeleteMyClubsResponse response = new DeleteMyClubsResponse();
+        StatusMessage statusMessage = new StatusMessage();
+        clubService.deleteUserClubs(currentUser);
+        statusMessage.setMessage("All clubs deleted successfully for user " + currentUser);
+        statusMessage.setStatus("OK");
+        response.setStatusMessage(statusMessage);
+        return response;
+    }
+
+
+
+
+
+
 
 
 }

@@ -83,6 +83,9 @@ public class ClubServiceImpl implements ClubService {
         if (!checkAdmin(username) && !clubToDelete.getCreator().getUsername().equals(username)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You are not allowed to delete this club");
         }
+        eventRepository.findAll().stream()
+                .filter(event -> event.getClub().getId() == id)
+                .forEach(event -> eventRepository.deleteById(event.getId()));
         clubRepository.deleteById(id);
     }
 
@@ -106,6 +109,14 @@ public class ClubServiceImpl implements ClubService {
         eventRepository.findAll().stream().filter(e -> e.getClub().getId() == clubId)
                 .forEach(event -> clubDetailsDto.getEvents().add(EventMapper.toEventDto(event)));
         return clubDetailsDto;
+    }
+
+    @Override
+    public void deleteUserClubs(String username) {
+        userRepository.findByUsername(username).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User Not Found"));
+        clubRepository.findAll().stream().filter(c -> c.getCreator().getUsername().equals(username)).forEach(c -> {
+            deleteClub(c.getId(), username);
+        });
     }
 
 

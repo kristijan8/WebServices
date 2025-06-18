@@ -34,8 +34,8 @@ import jakarta.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "")
-@XmlRootElement(name = "getAllClubsRequest")
-public class GetAllClubsRequest {
+@XmlRootElement(name = "deleteMyClubsRequest")
+public class DeleteMyClubsRequest {
 
 
 }

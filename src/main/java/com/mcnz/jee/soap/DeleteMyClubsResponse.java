@@ -25,7 +25,6 @@ import jakarta.xml.bind.annotation.XmlType;
  *   &lt;complexContent&gt;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="clubDto" type="{http://soap.jee.mcnz.com/}clubDto"/&gt;
  *         &lt;element name="statusMessage" type="{http://soap.jee.mcnz.com/}statusMessage"/&gt;
  *       &lt;/sequence&gt;
  *     &lt;/restriction&gt;
@@ -37,40 +36,13 @@ import jakarta.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "clubDto",
     "statusMessage"
 })
-@XmlRootElement(name = "createClubResponse")
-public class CreateClubResponse {
+@XmlRootElement(name = "deleteMyClubsResponse")
+public class DeleteMyClubsResponse {
 
-    @XmlElement(required = true)
-    protected ClubDto clubDto;
     @XmlElement(required = true)
     protected StatusMessage statusMessage;
-
-    /**
-     * Gets the value of the clubDto property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ClubDto }
-     *     
-     */
-    public ClubDto getClubDto() {
-        return clubDto;
-    }
-
-    /**
-     * Sets the value of the clubDto property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ClubDto }
-     *     
-     */
-    public void setClubDto(ClubDto value) {
-        this.clubDto = value;
-    }
 
     /**
      * Gets the value of the statusMessage property.

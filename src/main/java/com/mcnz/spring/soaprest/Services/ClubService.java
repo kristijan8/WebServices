@@ -17,5 +17,6 @@ public interface ClubService {
     boolean exists(String title);
     boolean exists(long id);
     ClubDetailsDto getClubDetails(Long clubId);
+    public void deleteUserClubs(String username);
 
 }

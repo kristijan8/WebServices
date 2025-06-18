@@ -37,6 +37,7 @@
     </xs:complexType>
 
 
+
     <!--<xs:complexType name="eventSoapDto">
         <xs:sequence>
             <xs:element name="id" type="xs:long"/>
@@ -144,5 +145,23 @@
             </xs:sequence>
         </xs:complexType>
     </xs:element>
+
+    <xs:element name="deleteMyClubsRequest">
+        <xs:complexType>
+            <xs:sequence>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="deleteMyClubsResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="statusMessage" type="tns:statusMessage"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+
+
+
 
 </xs:schema>

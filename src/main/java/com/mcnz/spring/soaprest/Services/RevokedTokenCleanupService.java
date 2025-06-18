@@ -2,6 +2,7 @@ package com.mcnz.spring.soaprest.Services;
 
 import com.mcnz.spring.soaprest.Repositories.RevokedTokenRpository;
 import com.mcnz.spring.soaprest.Security.SecurityConstants;
+import jakarta.transaction.Transactional;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -21,6 +22,7 @@ public class RevokedTokenCleanupService {
      * older than the max JWT lifetime.
      */
     @Scheduled(fixedRateString = "${token.blacklist.cleanup-ms:21600000}")
+    @Transactional
     public void purgeOldRevokedTokens() {
         Instant cutoff = Instant.now().minusMillis(SecurityConstants.JWT_Expiration);
         revokedTokenRepository.deleteAllByRevokedAtBefore(cutoff);

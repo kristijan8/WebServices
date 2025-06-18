@@ -37,4 +37,10 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .collect(Collectors.toList());
     }
 
+    public boolean isAdmin(String currentUser) {
+        UserEntity user = userRepository.findByUsername(currentUser)
+                .orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
+        return user.getRoles().stream()
+                .anyMatch(role -> role.getName().equals("ADMIN"));
+    }
 }
